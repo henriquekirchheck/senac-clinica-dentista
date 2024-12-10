@@ -65,13 +65,6 @@ public class Patient {
     return birthDate;
   }
 
-  // private final CPF cpf;
-  // private final String name;
-  // private final Email email;
-  // private final Phone phone;
-  // private final String address;
-  // private final LocalDate birthDate;
-
   public void addToTable(AsciiTable tb) {
     tb.addRow(getCpf(), getName(), getEmail(), getPhone(), getAddress(), getBirthDate());
   }
