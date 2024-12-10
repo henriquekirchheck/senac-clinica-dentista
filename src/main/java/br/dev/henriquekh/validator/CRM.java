@@ -13,7 +13,7 @@ public class CRM {
     if (value == null) {
       return Result.error(Error.NullPointer);
     }
-    if (pattern.matcher(value).matches()) {
+    if (!pattern.matcher(value).matches()) {
       return Result.error(Error.InvalidArgument);
     }
     return Result.success(new CRM(value));

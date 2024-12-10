@@ -30,6 +30,9 @@ public class Appointment {
 		if (description.trim().isEmpty()) {
 			return Result.error(Error.EmptyString);
 		}
+		if (appointmentDateTime.isAfter(LocalDateTime.now())) {
+			return Result.error(Error.InvalidArgument);
+		}
 		return Result.success(new Appointment(uuid, patientId, dentistId, appointmentDateTime, description));
 	}
 

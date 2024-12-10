@@ -1,26 +1,27 @@
-package br.dev.henriquekh;
+package br.dev.henriquekh.utils;
 
 import java.time.ZoneId;
-import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.github.javafaker.Faker;
 
+import br.dev.henriquekh.entities.Appointment;
 import br.dev.henriquekh.entities.Dentist;
 import br.dev.henriquekh.entities.Patient;
 import br.dev.henriquekh.repositories.AppointmentRepo;
 import br.dev.henriquekh.repositories.DentistRepo;
 import br.dev.henriquekh.repositories.PatientRepo;
-import br.dev.henriquekh.utils.IdentificationGenerator;
 import br.dev.henriquekh.validator.CPF;
 import br.dev.henriquekh.validator.CRM;
 import br.dev.henriquekh.validator.Email;
 import br.dev.henriquekh.validator.Phone;
 
 public class FakeData {
-	public void generateFakeData(AppointmentRepo appointmentRepo, DentistRepo dentistRepo, PatientRepo patientRepo) {
+	public static void generateFakeData(AppointmentRepo appointmentRepo, DentistRepo dentistRepo, PatientRepo patientRepo) {
 		Faker faker = new Faker();
 		for (int i = 0; i < 10; i++) {
 			patientRepo.createPatient(Patient
@@ -38,12 +39,14 @@ public class FakeData {
 							Phone.create(IdentificationGenerator.phoneNumber()).discardError().get())
 					.discardError().get());
 		}
-		for (int i = 0; i < 10; i++) {
-			Collection<Patient> patients = patientRepo.getAllPatients();
-			Collection<Dentist> dentists = dentistRepo.getAllDentists();
-			IntStream.range(0, Math.min(patients.size(), dentists.size()))
-					.<Pair<Patient, Dentist>>mapToObj(index -> Pair.of(patients.get(index), dentists.get(index)));
-
-		}
+		List<Patient> patients = List.copyOf(patientRepo.getAllPatients());
+		List<Dentist> dentists = List.copyOf(dentistRepo.getAllDentists());
+		IntStream.range(0, Math.min(patients.size(), dentists.size()))
+				.<Pair<Patient, Dentist>>mapToObj(index -> Pair.of(patients.get(index), dentists.get(index)))
+				.forEach((pair) -> {
+					appointmentRepo.createAppointment(Appointment.create(pair.getLeft().getCpf(), pair.getRight().getCrm(),
+							faker.date().future(30, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+							faker.chuckNorris().fact()).discardError().get());
+				});
 	}
 }
