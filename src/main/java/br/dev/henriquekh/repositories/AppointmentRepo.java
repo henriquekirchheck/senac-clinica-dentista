@@ -1,32 +1,40 @@
 package br.dev.henriquekh.repositories;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import br.dev.henriquekh.entities.Appointment;
 
 public class AppointmentRepo {
-  private final HashMap<UUID, Appointment> dentistsMap;
+	private final HashMap<UUID, Appointment> appointmentMap;
 
-  public AppointmentRepo() {
-    this.dentistsMap = new HashMap<>();
-  }
+	public AppointmentRepo() {
+		this.appointmentMap = new HashMap<>();
+	}
 
-  public void createAppointment(Appointment patient) {
-    dentistsMap.put(patient.getUuid(), patient);
-  }
+	public void createAppointment(Appointment patient) {
+		appointmentMap.put(patient.getUuid(), patient);
+	}
 
-  public Optional<Appointment> removeAppointment(UUID uuid) {
-    return Optional.ofNullable(dentistsMap.remove(uuid));
-  }
+	public Optional<Appointment> removeAppointment(UUID uuid) {
+		return Optional.ofNullable(appointmentMap.remove(uuid));
+	}
 
-  public Optional<Appointment> getAppointment(UUID uuid) {
-    return Optional.ofNullable(dentistsMap.get(uuid));
-  }
+	public Optional<Appointment> getAppointment(UUID uuid) {
+		return Optional.ofNullable(appointmentMap.get(uuid));
+	}
 
-  public Collection<Appointment> getAllAppointments() {
-    return dentistsMap.values();
-  }
+	public Collection<Appointment> getAllAppointments() {
+		return appointmentMap.values();
+	}
+
+	public Collection<Appointment> getAllAppointmentsOnDate(LocalDate date) {
+		return appointmentMap.values().stream().filter((appointment) -> {
+			return appointment.getAppointmentDateTime().toLocalDate().isEqual(date);
+		}).collect(Collectors.toList());
+	}
 }
