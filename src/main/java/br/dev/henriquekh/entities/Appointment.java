@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
 
@@ -70,7 +71,8 @@ public class Appointment {
 		return description;
 	}
 
-	public Collection<Object> getTable() {
+	@JsonIgnore
+	public Collection<Object> asTable() {
 		return Arrays.asList(getDentistId(), getPatientId(), getAppointmentDateTime(), getDescription());
 	}
 }

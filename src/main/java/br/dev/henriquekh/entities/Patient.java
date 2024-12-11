@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
 
@@ -71,7 +72,8 @@ public class Patient {
     return birthDate;
   }
 
-  public Collection<Object> getTable() {
+  @JsonIgnore
+  public Collection<Object> asTable() {
     return Arrays.asList(getCpf(), getName(), getEmail(), getPhone(), getAddress(), getBirthDate());
   }
 }

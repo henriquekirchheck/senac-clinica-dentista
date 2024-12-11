@@ -35,6 +35,7 @@ public record SaveRepositories(Path path, AppointmentRepo appointmentRepo, Denti
 
   public void load() throws IOException {
     final File file = path.toFile();
+    if (!file.exists()) return;
     Repositories repos = mapper.readValue(file, Repositories.class);
     appointmentRepo.loadAppointments(repos.appointments);
     dentistRepo.loadDentists(repos.dentists);

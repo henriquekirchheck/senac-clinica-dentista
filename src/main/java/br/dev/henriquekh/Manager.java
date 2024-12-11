@@ -41,7 +41,7 @@ public class Manager {
 				case 1 -> {
 					System.err.println("=> Lista de Pacientes");
 					ManagerUtils.printTable(Arrays.asList("CPF", "Nome", "Email", "Telefone", "Endereco", "Data de Nascimento"),
-							patientRepo.getAllPatients(), Patient::getTable);
+							patientRepo.getAllPatients(), Patient::asTable);
 				}
 				case 2 -> {
 					System.err.println("=> Adicione Paciente ");
@@ -166,7 +166,7 @@ public class Manager {
 				case 1 -> {
 					System.err.println("=> Lista de Dentistas");
 					ManagerUtils.printTable(Arrays.asList("CRM", "Nome", "Email", "Telefone"), dentistRepo.getAllDentists(),
-							Dentist::getTable);
+							Dentist::asTable);
 				}
 				case 2 -> {
 					System.err.println("=> Adicione Dentista ");
@@ -281,7 +281,7 @@ public class Manager {
 				case 1 -> {
 					System.err.println("=> Lista de Consultas");
 					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
-							appointmentRepo.getAllAppointments(), Appointment::getTable);
+							appointmentRepo.getAllAppointments(), Appointment::asTable);
 				}
 				case 2 -> {
 					System.err.println("=> Adicione Consulta ");
@@ -377,7 +377,7 @@ public class Manager {
 					LocalDate appointmentsDate = LocalDate.parse(scanner.nextLine());
 
 					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
-							appointmentRepo.getAllAppointmentsOnDate(appointmentsDate), Appointment::getTable);
+							appointmentRepo.getAllAppointmentsOnDate(appointmentsDate), Appointment::asTable);
 				}
 				case 6 -> {
 					System.err.println("=> Lista de Consultas por Dentista");
@@ -389,7 +389,7 @@ public class Manager {
 					CRM crm = crmOptional.get();
 
 					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
-							appointmentRepo.getAllAppointmentsByDentist(crm), Appointment::getTable);
+							appointmentRepo.getAllAppointmentsByDentist(crm), Appointment::asTable);
 				}
 				case 7 -> {
 					System.err.println("=> Lista de Pacientes com consultas nos proximos dias");
@@ -399,7 +399,7 @@ public class Manager {
 					scanner.nextLine();
 
 					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
-							appointmentRepo.getAllAppointmentsNextDays(value), Appointment::getTable);
+							appointmentRepo.getAllAppointmentsNextDays(value), Appointment::asTable);
 				}
 				case 8 -> {
 					System.err.println("=> Numero de consultas por dentistas");
