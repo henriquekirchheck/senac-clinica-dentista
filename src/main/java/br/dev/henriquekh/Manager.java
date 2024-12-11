@@ -37,134 +37,134 @@ public class Manager {
 			scanner.nextLine();
 
 			switch (selection) {
-			case 1 -> {
-				System.err.println("=> Lista de Pacientes");
-				AsciiTable tb = new AsciiTable();
-				tb.addRule();
-				tb.addRow("CPF", "Nome", "Email", "Telefone", "Endereco", "Data de Nascimento");
-				tb.addRule();
-				patientRepo.getAllPatients().parallelStream().forEach((patient) -> {
-					patient.addToTable(tb);
+				case 1 -> {
+					System.err.println("=> Lista de Pacientes");
+					AsciiTable tb = new AsciiTable();
 					tb.addRule();
-				});
-				System.out.println(tb.render());
-			}
-			case 2 -> {
-				System.err.println("=> Adicione Paciente ");
-
-				System.err.print("Digite o CPF: ");
-				Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-				Optional<CPF> cpfOptional = errorHandler(cpfResult);
-				if (cpfOptional.isEmpty()) {
-					break;
+					tb.addRow("CPF", "Nome", "Email", "Telefone", "Endereco", "Data de Nascimento");
+					tb.addRule();
+					patientRepo.getAllPatients().parallelStream().forEach((patient) -> {
+						patient.addToTable(tb);
+						tb.addRule();
+					});
+					System.out.println(tb.render());
 				}
-				CPF cpf = cpfOptional.get();
+				case 2 -> {
+					System.err.println("=> Adicione Paciente ");
 
-				System.err.print("Digite o nome: ");
-				String name = scanner.nextLine();
+					System.err.print("Digite o CPF: ");
+					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
+					Optional<CPF> cpfOptional = errorHandler(cpfResult);
+					if (cpfOptional.isEmpty()) {
+						break;
+					}
+					CPF cpf = cpfOptional.get();
 
-				System.err.print("Digite o Email: ");
-				Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-				Optional<Email> emailOptional = errorHandler(emailResult);
-				if (emailOptional.isEmpty()) {
-					break;
+					System.err.print("Digite o nome: ");
+					String name = scanner.nextLine();
+
+					System.err.print("Digite o Email: ");
+					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
+					Optional<Email> emailOptional = errorHandler(emailResult);
+					if (emailOptional.isEmpty()) {
+						break;
+					}
+					Email email = emailOptional.get();
+
+					System.err.print("Digite o Telefone: ");
+					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
+					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					if (phoneOptional.isEmpty()) {
+						break;
+					}
+					Phone phone = phoneOptional.get();
+
+					System.err.print("Digite o Endereco: ");
+					String address = scanner.nextLine();
+
+					System.err.print("Digite a Data de Nacimento (YYYY-MM-DD): ");
+					LocalDate birthDate = LocalDate.parse(scanner.nextLine());
+
+					Optional<Patient> patientOptional = errorHandler(
+							Patient.create(name, cpf, email, phone, address, birthDate));
+					if (phoneOptional.isEmpty()) {
+						break;
+					}
+					Patient patient = patientOptional.get();
+
+					patientRepo.createPatient(patient);
 				}
-				Email email = emailOptional.get();
+				case 3 -> {
+					System.err.println("=> Remover Paciente ");
 
-				System.err.print("Digite o Telefone: ");
-				Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-				Optional<Phone> phoneOptional = errorHandler(phoneResult);
-				if (phoneOptional.isEmpty()) {
-					break;
+					System.err.print("Digite o CPF: ");
+					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
+					Optional<CPF> cpfOptional = errorHandler(cpfResult);
+					if (cpfOptional.isEmpty()) {
+						break;
+					}
+					CPF cpf = cpfOptional.get();
+
+					if (patientRepo.removePatient(cpf).isEmpty()) {
+						System.err.println("Paciente nao existe");
+					}
+					;
 				}
-				Phone phone = phoneOptional.get();
+				case 4 -> {
+					System.err.println("=> Modificar Paciente ");
 
-				System.err.print("Digite o Endereco: ");
-				String address = scanner.nextLine();
+					System.err.print("Digite o CPF: ");
+					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
+					Optional<CPF> cpfOptional = errorHandler(cpfResult);
+					if (cpfOptional.isEmpty()) {
+						break;
+					}
+					CPF cpf = cpfOptional.get();
 
-				System.err.print("Digite a Data de Nacimento (YYYY-MM-DD): ");
-				LocalDate birthDate = LocalDate.parse(scanner.nextLine());
+					if (patientRepo.removePatient(cpf).isEmpty()) {
+						System.err.println("Paciente nao existe");
+						break;
+					}
+					;
 
-				Optional<Patient> patientOptional = errorHandler(
-						Patient.create(name, cpf, email, phone, address, birthDate));
-				if (phoneOptional.isEmpty()) {
-					break;
+					System.err.print("Digite o nome: ");
+					String name = scanner.nextLine();
+
+					System.err.print("Digite o Email: ");
+					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
+					Optional<Email> emailOptional = errorHandler(emailResult);
+					if (emailOptional.isEmpty()) {
+						break;
+					}
+					Email email = emailOptional.get();
+
+					System.err.print("Digite o Telefone: ");
+					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
+					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					if (phoneOptional.isEmpty()) {
+						break;
+					}
+					Phone phone = phoneOptional.get();
+
+					System.err.print("Digite o Endereco: ");
+					String address = scanner.nextLine();
+
+					System.err.print("Digite a Data de Nacimento (YYYY-MM-DD): ");
+					LocalDate birthDate = LocalDate.parse(scanner.nextLine());
+
+					Optional<Patient> patientOptional = errorHandler(
+							Patient.create(name, cpf, email, phone, address, birthDate));
+					if (patientOptional.isEmpty()) {
+						break;
+					}
+					Patient patient = patientOptional.get();
+
+					patientRepo.createPatient(patient);
 				}
-				Patient patient = patientOptional.get();
-
-				patientRepo.createPatient(patient);
-			}
-			case 3 -> {
-				System.err.println("=> Remover Paciente ");
-
-				System.err.print("Digite o CPF: ");
-				Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-				Optional<CPF> cpfOptional = errorHandler(cpfResult);
-				if (cpfOptional.isEmpty()) {
-					break;
+				case 0 -> {
+					break mainLoop;
 				}
-				CPF cpf = cpfOptional.get();
-
-				if (patientRepo.removePatient(cpf).isEmpty()) {
-					System.err.println("Paciente nao existe");
-				}
-				;
-			}
-			case 4 -> {
-				System.err.println("=> Modificar Paciente ");
-
-				System.err.print("Digite o CPF: ");
-				Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-				Optional<CPF> cpfOptional = errorHandler(cpfResult);
-				if (cpfOptional.isEmpty()) {
-					break;
-				}
-				CPF cpf = cpfOptional.get();
-
-				if (patientRepo.removePatient(cpf).isEmpty()) {
-					System.err.println("Paciente nao existe");
-					break;
-				}
-				;
-
-				System.err.print("Digite o nome: ");
-				String name = scanner.nextLine();
-
-				System.err.print("Digite o Email: ");
-				Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-				Optional<Email> emailOptional = errorHandler(emailResult);
-				if (emailOptional.isEmpty()) {
-					break;
-				}
-				Email email = emailOptional.get();
-
-				System.err.print("Digite o Telefone: ");
-				Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-				Optional<Phone> phoneOptional = errorHandler(phoneResult);
-				if (phoneOptional.isEmpty()) {
-					break;
-				}
-				Phone phone = phoneOptional.get();
-
-				System.err.print("Digite o Endereco: ");
-				String address = scanner.nextLine();
-
-				System.err.print("Digite a Data de Nacimento (YYYY-MM-DD): ");
-				LocalDate birthDate = LocalDate.parse(scanner.nextLine());
-
-				Optional<Patient> patientOptional = errorHandler(
-						Patient.create(name, cpf, email, phone, address, birthDate));
-				if (patientOptional.isEmpty()) {
-					break;
-				}
-				Patient patient = patientOptional.get();
-
-				patientRepo.createPatient(patient);
-			}
-			case 0 -> {
-				break mainLoop;
-			}
-			default -> System.err.println("Opcao Invalida");
+				default -> System.err.println("Opcao Invalida");
 			}
 		}
 	}
@@ -185,117 +185,117 @@ public class Manager {
 			scanner.nextLine();
 
 			switch (selection) {
-			case 1 -> {
-				System.err.println("=> Lista de Dentistas");
-				AsciiTable tb = new AsciiTable();
-				tb.addRule();
-				tb.addRow("CRM", "Nome", "Email", "Telefone");
-				tb.addRule();
-				dentistRepo.getAllDentists().parallelStream().forEach((dentist) -> {
-					dentist.addToTable(tb);
+				case 1 -> {
+					System.err.println("=> Lista de Dentistas");
+					AsciiTable tb = new AsciiTable();
 					tb.addRule();
-				});
-				System.out.println(tb.render());
-			}
-			case 2 -> {
-				System.err.println("=> Adicione Dentista ");
-
-				System.err.print("Digite o CRM: ");
-				Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-				Optional<CRM> crmOptional = errorHandler(crmResult);
-				if (crmOptional.isEmpty()) {
-					break;
+					tb.addRow("CRM", "Nome", "Email", "Telefone");
+					tb.addRule();
+					dentistRepo.getAllDentists().parallelStream().forEach((dentist) -> {
+						dentist.addToTable(tb);
+						tb.addRule();
+					});
+					System.out.println(tb.render());
 				}
-				CRM crm = crmOptional.get();
+				case 2 -> {
+					System.err.println("=> Adicione Dentista ");
 
-				System.err.print("Digite o nome: ");
-				String name = scanner.nextLine();
+					System.err.print("Digite o CRM: ");
+					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
+					Optional<CRM> crmOptional = errorHandler(crmResult);
+					if (crmOptional.isEmpty()) {
+						break;
+					}
+					CRM crm = crmOptional.get();
 
-				System.err.print("Digite o Email: ");
-				Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-				Optional<Email> emailOptional = errorHandler(emailResult);
-				if (emailOptional.isEmpty()) {
-					break;
+					System.err.print("Digite o nome: ");
+					String name = scanner.nextLine();
+
+					System.err.print("Digite o Email: ");
+					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
+					Optional<Email> emailOptional = errorHandler(emailResult);
+					if (emailOptional.isEmpty()) {
+						break;
+					}
+					Email email = emailOptional.get();
+
+					System.err.print("Digite o Telefone: ");
+					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
+					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					if (phoneOptional.isEmpty()) {
+						break;
+					}
+					Phone phone = phoneOptional.get();
+
+					Optional<Dentist> dentistOptional = errorHandler(Dentist.create(name, crm, email, phone));
+					if (dentistOptional.isEmpty()) {
+						break;
+					}
+					Dentist dentist = dentistOptional.get();
+
+					dentistRepo.createDentist(dentist);
 				}
-				Email email = emailOptional.get();
+				case 3 -> {
+					System.err.println("=> Remover Dentista ");
 
-				System.err.print("Digite o Telefone: ");
-				Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-				Optional<Phone> phoneOptional = errorHandler(phoneResult);
-				if (phoneOptional.isEmpty()) {
-					break;
+					System.err.print("Digite o CRM: ");
+					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
+					Optional<CRM> crmOptional = errorHandler(crmResult);
+					if (crmOptional.isEmpty()) {
+						break;
+					}
+					CRM crm = crmOptional.get();
+
+					if (dentistRepo.removeDentist(crm).isEmpty()) {
+						System.err.println("Dentista nao existe");
+					}
 				}
-				Phone phone = phoneOptional.get();
+				case 4 -> {
+					System.err.println("=> Modificar Dentista ");
 
-				Optional<Dentist> dentistOptional = errorHandler(Dentist.create(name, crm, email, phone));
-				if (dentistOptional.isEmpty()) {
-					break;
+					System.err.print("Digite o CRM: ");
+					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
+					Optional<CRM> crmOptional = errorHandler(crmResult);
+					if (crmOptional.isEmpty()) {
+						break;
+					}
+					CRM crm = crmOptional.get();
+
+					if (dentistRepo.removeDentist(crm).isEmpty()) {
+						System.err.println("Dentista nao existe");
+					}
+
+					System.err.print("Digite o nome: ");
+					String name = scanner.nextLine();
+
+					System.err.print("Digite o Email: ");
+					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
+					Optional<Email> emailOptional = errorHandler(emailResult);
+					if (emailOptional.isEmpty()) {
+						break;
+					}
+					Email email = emailOptional.get();
+
+					System.err.print("Digite o Telefone: ");
+					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
+					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					if (phoneOptional.isEmpty()) {
+						break;
+					}
+					Phone phone = phoneOptional.get();
+
+					Optional<Dentist> dentistOptional = errorHandler(Dentist.create(name, crm, email, phone));
+					if (dentistOptional.isEmpty()) {
+						break;
+					}
+					Dentist dentist = dentistOptional.get();
+
+					dentistRepo.createDentist(dentist);
 				}
-				Dentist dentist = dentistOptional.get();
-
-				dentistRepo.createDentist(dentist);
-			}
-			case 3 -> {
-				System.err.println("=> Remover Dentista ");
-
-				System.err.print("Digite o CRM: ");
-				Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-				Optional<CRM> crmOptional = errorHandler(crmResult);
-				if (crmOptional.isEmpty()) {
-					break;
+				case 0 -> {
+					break mainLoop;
 				}
-				CRM crm = crmOptional.get();
-
-				if (dentistRepo.removeDentist(crm).isEmpty()) {
-					System.err.println("Dentista nao existe");
-				}
-			}
-			case 4 -> {
-				System.err.println("=> Modificar Dentista ");
-
-				System.err.print("Digite o CRM: ");
-				Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-				Optional<CRM> crmOptional = errorHandler(crmResult);
-				if (crmOptional.isEmpty()) {
-					break;
-				}
-				CRM crm = crmOptional.get();
-
-				if (dentistRepo.removeDentist(crm).isEmpty()) {
-					System.err.println("Dentista nao existe");
-				}
-
-				System.err.print("Digite o nome: ");
-				String name = scanner.nextLine();
-
-				System.err.print("Digite o Email: ");
-				Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-				Optional<Email> emailOptional = errorHandler(emailResult);
-				if (emailOptional.isEmpty()) {
-					break;
-				}
-				Email email = emailOptional.get();
-
-				System.err.print("Digite o Telefone: ");
-				Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-				Optional<Phone> phoneOptional = errorHandler(phoneResult);
-				if (phoneOptional.isEmpty()) {
-					break;
-				}
-				Phone phone = phoneOptional.get();
-
-				Optional<Dentist> dentistOptional = errorHandler(Dentist.create(name, crm, email, phone));
-				if (dentistOptional.isEmpty()) {
-					break;
-				}
-				Dentist dentist = dentistOptional.get();
-
-				dentistRepo.createDentist(dentist);
-			}
-			case 0 -> {
-				break mainLoop;
-			}
-			default -> System.err.println("Opcao Invalida");
+				default -> System.err.println("Opcao Invalida");
 			}
 		}
 
@@ -310,6 +310,9 @@ public class Manager {
 					3. Remover Consulta;
 					4. Editar Consulta;
 					5. Listar Consultas Data Especifica;
+					6. Listar Consultas do Dentista;
+					7. Listar Consultas nos proximos dias;
+					8. Listar Numero de Consultas por Dentista;
 					0. Voltar;
 					""");
 			System.err.print("Selecione uma das opcoes acima: ");
@@ -318,74 +321,20 @@ public class Manager {
 			scanner.nextLine();
 
 			switch (selection) {
-			case 1 -> {
-				System.err.println("=> Lista de Consultas");
-				AsciiTable tb = new AsciiTable();
-				tb.addRule();
-				tb.addRow("Paciente", "Dentista", "Hora Marcada", "Descrição");
-				tb.addRule();
-				appointmentRepo.getAllAppointments().parallelStream().forEach((appointment) -> {
-					appointment.addToTable(tb);
+				case 1 -> {
+					System.err.println("=> Lista de Consultas");
+					AsciiTable tb = new AsciiTable();
 					tb.addRule();
-				});
-				System.out.println(tb.render());
-			}
-			case 2 -> {
-				System.err.println("=> Adicione Consulta ");
-
-				System.err.print("Digite o CPF: ");
-				Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-				Optional<CPF> cpfOptional = errorHandler(cpfResult);
-				if (cpfOptional.isEmpty()) {
-					break;
+					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
+					tb.addRule();
+					appointmentRepo.getAllAppointments().parallelStream().forEach((appointment) -> {
+						appointment.addToTable(tb);
+						tb.addRule();
+					});
+					System.out.println(tb.render());
 				}
-				CPF cpf = cpfOptional.get();
-
-				System.err.print("Digite o CRM: ");
-				Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-				Optional<CRM> crmOptional = errorHandler(crmResult);
-				if (crmOptional.isEmpty()) {
-					break;
-				}
-				CRM crm = crmOptional.get();
-
-				System.err.print("Digite a Data e Hora da Consulta (YYYY-MM-DDThh:mm): ");
-				LocalDateTime appointmentDateTime = LocalDateTime.parse(scanner.nextLine());
-
-				System.err.print("Digite a Descrição: ");
-				String description = scanner.nextLine();
-
-				Optional<Appointment> appointmentOptional = errorHandler(
-						Appointment.create(cpf, crm, appointmentDateTime, description));
-				if (appointmentOptional.isEmpty()) {
-					break;
-				}
-				Appointment appointment = appointmentOptional.get();
-
-				appointmentRepo.createAppointment(appointment);
-			}
-			case 3 -> {
-				System.err.println("=> Remover Dentista ");
-
-				System.err.print("Digite o ID: ");
-				try {
-					UUID uuid = UUID.fromString(scanner.nextLine());
-					if (appointmentRepo.removeAppointment(uuid).isEmpty()) {
-						System.err.println("Consulta nao existe");
-					}
-				} catch (IllegalArgumentException e) {
-					System.err.println("UUID invalido");
-				}
-			}
-			case 4 -> {
-				System.err.println("=> Modificar Consulta ");
-
-				System.err.print("Digite o ID: ");
-				try {
-					UUID uuid = UUID.fromString(scanner.nextLine());
-					if (appointmentRepo.removeAppointment(uuid).isEmpty()) {
-						System.err.println("Consulta nao existe");
-					}
+				case 2 -> {
+					System.err.println("=> Adicione Consulta ");
 
 					System.err.print("Digite o CPF: ");
 					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
@@ -410,37 +359,140 @@ public class Manager {
 					String description = scanner.nextLine();
 
 					Optional<Appointment> appointmentOptional = errorHandler(
-							Appointment.createWithUUID(uuid, cpf, crm, appointmentDateTime, description));
+							Appointment.create(cpf, crm, appointmentDateTime, description));
 					if (appointmentOptional.isEmpty()) {
 						break;
 					}
 					Appointment appointment = appointmentOptional.get();
 
 					appointmentRepo.createAppointment(appointment);
-				} catch (IllegalArgumentException e) {
-					System.err.println("UUID invalido");
 				}
-			}
-			case 5 -> {
-				System.err.println("=> Lista de Consultas");
+				case 3 -> {
+					System.err.println("=> Remover Dentista ");
 
-				System.err.print("Digite a Data das Consultas (YYYY-MM-DD): ");
-				LocalDate appointmentsDate = LocalDate.parse(scanner.nextLine());
+					System.err.print("Digite o ID: ");
+					try {
+						UUID uuid = UUID.fromString(scanner.nextLine());
+						if (appointmentRepo.removeAppointment(uuid).isEmpty()) {
+							System.err.println("Consulta nao existe");
+						}
+					} catch (IllegalArgumentException e) {
+						System.err.println("UUID invalido");
+					}
+				}
+				case 4 -> {
+					System.err.println("=> Modificar Consulta ");
 
-				AsciiTable tb = new AsciiTable();
-				tb.addRule();
-				tb.addRow("Paciente", "Dentista", "Hora Marcada", "Descrição");
-				tb.addRule();
-				appointmentRepo.getAllAppointmentsOnDate(appointmentsDate).parallelStream().forEach((appointment) -> {
-					appointment.addToTable(tb);
+					System.err.print("Digite o ID: ");
+					try {
+						UUID uuid = UUID.fromString(scanner.nextLine());
+						if (appointmentRepo.removeAppointment(uuid).isEmpty()) {
+							System.err.println("Consulta nao existe");
+						}
+
+						System.err.print("Digite o CPF: ");
+						Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
+						Optional<CPF> cpfOptional = errorHandler(cpfResult);
+						if (cpfOptional.isEmpty()) {
+							break;
+						}
+						CPF cpf = cpfOptional.get();
+
+						System.err.print("Digite o CRM: ");
+						Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
+						Optional<CRM> crmOptional = errorHandler(crmResult);
+						if (crmOptional.isEmpty()) {
+							break;
+						}
+						CRM crm = crmOptional.get();
+
+						System.err.print("Digite a Data e Hora da Consulta (YYYY-MM-DDThh:mm): ");
+						LocalDateTime appointmentDateTime = LocalDateTime.parse(scanner.nextLine());
+
+						System.err.print("Digite a Descrição: ");
+						String description = scanner.nextLine();
+
+						Optional<Appointment> appointmentOptional = errorHandler(
+								Appointment.createWithUUID(uuid, cpf, crm, appointmentDateTime, description));
+						if (appointmentOptional.isEmpty()) {
+							break;
+						}
+						Appointment appointment = appointmentOptional.get();
+
+						appointmentRepo.createAppointment(appointment);
+					} catch (IllegalArgumentException e) {
+						System.err.println("UUID invalido");
+					}
+				}
+				case 5 -> {
+					System.err.println("=> Lista de Consultas para data especifica");
+
+					System.err.print("Digite a Data das Consultas (YYYY-MM-DD): ");
+					LocalDate appointmentsDate = LocalDate.parse(scanner.nextLine());
+
+					AsciiTable tb = new AsciiTable();
 					tb.addRule();
-				});
-				System.out.println(tb.render());
-			}
-			case 0 -> {
-				break mainLoop;
-			}
-			default -> System.err.println("Opcao Invalida");
+					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
+					tb.addRule();
+					appointmentRepo.getAllAppointmentsOnDate(appointmentsDate).parallelStream().forEach((appointment) -> {
+						appointment.addToTable(tb);
+						tb.addRule();
+					});
+					System.out.println(tb.render());
+				}
+				case 6 -> {
+					System.err.println("=> Lista de Consultas por Dentista");
+
+					System.err.print("Digite o CRM: ");
+					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
+					Optional<CRM> crmOptional = errorHandler(crmResult);
+					if (crmOptional.isEmpty()) {
+						break;
+					}
+					CRM crm = crmOptional.get();
+
+					AsciiTable tb = new AsciiTable();
+					tb.addRule();
+					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
+					tb.addRule();
+					appointmentRepo.getAllAppointmentsByDentist(crm).parallelStream().forEach((appointment) -> {
+						appointment.addToTable(tb);
+						tb.addRule();
+					});
+					System.out.println(tb.render());
+				}
+				case 7 -> {
+					System.err.println("=> Lista de Pacientes com consultas nos proximos dias");
+
+					System.err.print("Digite quantos dias: ");
+					int value = scanner.nextInt();
+					scanner.nextLine();
+
+					AsciiTable tb = new AsciiTable();
+					tb.addRule();
+					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
+					tb.addRule();
+					appointmentRepo.getAllAppointmentsNextDays(value).parallelStream().forEach((appointment) -> {
+						appointment.addToTable(tb);
+						tb.addRule();
+					});
+					System.out.println(tb.render());
+				}
+				case 8 -> {
+					System.err.println("=> Numero de consultas por dentistas");
+
+					AsciiTable tb = new AsciiTable();
+					tb.addRule();
+					tb.addRow("Dentista", "Numero de Consultas");
+					tb.addRule();
+					appointmentRepo.getNumberOfAppointments().forEach((dentistId, number) -> tb.addRow(dentistId, number));
+					tb.addRule();
+					System.out.println(tb.render());
+				}
+				case 0 -> {
+					break mainLoop;
+				}
+				default -> System.err.println("Opcao Invalida");
 			}
 		}
 
@@ -448,16 +500,16 @@ public class Manager {
 
 	private static <T> Optional<T> errorHandler(Result<T, Error> result) {
 		switch (result) {
-		case Result.Success<T, Error>(T val) -> {
-			return Optional.of(val);
-		}
-		case Result.Error<T, Error>(Error error) -> {
-			switch (error) {
-			case InvalidArgument -> System.err.println("Argumento invalido, tente novamente");
-			case EmptyString -> System.err.println("Argumento invalido, tente novamente");
-			case NullPointer -> throw new NullPointerException();
+			case Result.Success<T, Error>(T val) -> {
+				return Optional.of(val);
 			}
-		}
+			case Result.Error<T, Error>(Error error) -> {
+				switch (error) {
+					case InvalidArgument -> System.err.println("Argumento invalido, tente novamente");
+					case EmptyString -> System.err.println("Argumento invalido, tente novamente");
+					case NullPointer -> throw new NullPointerException();
+				}
+			}
 		}
 		return Optional.empty();
 	}
