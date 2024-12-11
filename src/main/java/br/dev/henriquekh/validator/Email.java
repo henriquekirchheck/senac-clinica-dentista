@@ -2,6 +2,8 @@ package br.dev.henriquekh.validator;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
 import br.dev.henriquekh.Error;
 
@@ -18,7 +20,8 @@ public class Email {
     return Result.success(new Email(value));
   }
 
-  private Email(String value) {
+  @JsonCreator
+  private Email(@JsonProperty("value") String value) {
     this.value = value;
   }
 

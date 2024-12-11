@@ -2,6 +2,8 @@ package br.dev.henriquekh.entities;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
 
 import br.dev.henriquekh.Error;
@@ -32,7 +34,10 @@ public class Patient {
     return Result.success(new Patient(name, cpf, email, phone, address, birthDate));
   }
 
-  private Patient(String name, CPF cpf, Email email, Phone phone, String address, LocalDate birthDate) {
+  @JsonCreator
+  private Patient(@JsonProperty("name") String name, @JsonProperty("cpf") CPF cpf, @JsonProperty("email") Email email,
+      @JsonProperty("phone") Phone phone, @JsonProperty("address") String address,
+      @JsonProperty("birthDate") LocalDate birthDate) {
     this.name = name;
     this.cpf = cpf;
     this.email = email;

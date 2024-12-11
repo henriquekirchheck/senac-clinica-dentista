@@ -29,4 +29,10 @@ public class DentistRepo {
   public Collection<Dentist> getAllDentists() {
     return dentistsMap.values();
   }
+
+  public void loadDentists(Collection<Dentist> dentists) {
+		for (Dentist dentist : dentists) {
+			createDentist(dentist);
+		}
+	}
 }

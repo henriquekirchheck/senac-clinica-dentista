@@ -3,6 +3,8 @@ package br.dev.henriquekh.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
 
 import br.dev.henriquekh.Error;
@@ -30,14 +32,16 @@ public class Appointment {
 		if (description.trim().isEmpty()) {
 			return Result.error(Error.EmptyString);
 		}
-		if (appointmentDateTime.isAfter(LocalDateTime.now())) {
+		if (appointmentDateTime.isBefore(LocalDateTime.now())) {
 			return Result.error(Error.InvalidArgument);
 		}
 		return Result.success(new Appointment(uuid, patientId, dentistId, appointmentDateTime, description));
 	}
 
-	private Appointment(UUID uuid, CPF patientId, CRM dentistId, LocalDateTime appointmentDateTime,
-			String description) {
+	@JsonCreator
+	private Appointment(@JsonProperty("uuid") UUID uuid, @JsonProperty("patientId") CPF patientId,
+			@JsonProperty("dentistId") CRM dentistId, @JsonProperty("appointmentDateTime") LocalDateTime appointmentDateTime,
+			@JsonProperty("description") String description) {
 		this.uuid = uuid;
 		this.patientId = patientId;
 		this.dentistId = dentistId;

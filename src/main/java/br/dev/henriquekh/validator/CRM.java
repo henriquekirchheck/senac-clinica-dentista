@@ -2,6 +2,8 @@ package br.dev.henriquekh.validator;
 
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
 import br.dev.henriquekh.Error;
 
@@ -19,7 +21,8 @@ public class CRM {
     return Result.success(new CRM(value));
   }
 
-  private CRM(String value) {
+  @JsonCreator
+  private CRM(@JsonProperty("value") String value) {
     this.value = value;
   }
 

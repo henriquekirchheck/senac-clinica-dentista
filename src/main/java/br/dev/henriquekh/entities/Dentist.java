@@ -1,5 +1,7 @@
 package br.dev.henriquekh.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
 
 import br.dev.henriquekh.Error;
@@ -24,7 +26,9 @@ public class Dentist {
 		return Result.success(new Dentist(name, crm, email, phone));
 	}
 
-	private Dentist(String name, CRM crm, Email email, Phone phone) {
+	@JsonCreator
+	private Dentist(@JsonProperty("name") String name, @JsonProperty("crm") CRM crm, @JsonProperty("email") Email email,
+			@JsonProperty("phone") Phone phone) {
 		this.name = name;
 		this.crm = crm;
 		this.email = email;

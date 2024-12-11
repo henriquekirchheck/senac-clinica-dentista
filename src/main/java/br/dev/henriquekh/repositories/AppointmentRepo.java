@@ -32,6 +32,12 @@ public class AppointmentRepo {
 		return appointmentMap.values();
 	}
 
+	public void loadAppointments(Collection<Appointment> appointments) {
+		for (Appointment appointment : appointments) {
+			createAppointment(appointment);
+		}
+	}
+
 	public Collection<Appointment> getAllAppointmentsOnDate(LocalDate date) {
 		return appointmentMap.values().stream().filter((appointment) -> {
 			return appointment.getAppointmentDateTime().toLocalDate().isEqual(date);
