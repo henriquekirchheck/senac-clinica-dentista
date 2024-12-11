@@ -2,6 +2,7 @@ package br.dev.henriquekh;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
@@ -14,11 +15,11 @@ import br.dev.henriquekh.entities.Patient;
 import br.dev.henriquekh.repositories.AppointmentRepo;
 import br.dev.henriquekh.repositories.DentistRepo;
 import br.dev.henriquekh.repositories.PatientRepo;
+import br.dev.henriquekh.utils.ManagerUtils;
 import br.dev.henriquekh.validator.CPF;
 import br.dev.henriquekh.validator.CRM;
 import br.dev.henriquekh.validator.Email;
 import br.dev.henriquekh.validator.Phone;
-import de.vandermeer.asciitable.AsciiTable;
 
 public class Manager {
 	public static void patientHandler(Scanner scanner, PatientRepo patientRepo) {
@@ -39,22 +40,13 @@ public class Manager {
 			switch (selection) {
 				case 1 -> {
 					System.err.println("=> Lista de Pacientes");
-					AsciiTable tb = new AsciiTable();
-					tb.addRule();
-					tb.addRow("CPF", "Nome", "Email", "Telefone", "Endereco", "Data de Nascimento");
-					tb.addRule();
-					patientRepo.getAllPatients().parallelStream().forEach((patient) -> {
-						patient.addToTable(tb);
-						tb.addRule();
-					});
-					System.out.println(tb.render());
+					ManagerUtils.printTable(Arrays.asList("CPF", "Nome", "Email", "Telefone", "Endereco", "Data de Nascimento"),
+							patientRepo.getAllPatients(), Patient::getTable);
 				}
 				case 2 -> {
 					System.err.println("=> Adicione Paciente ");
 
-					System.err.print("Digite o CPF: ");
-					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-					Optional<CPF> cpfOptional = errorHandler(cpfResult);
+					Optional<CPF> cpfOptional = ManagerUtils.getCPF(scanner);
 					if (cpfOptional.isEmpty()) {
 						break;
 					}
@@ -63,17 +55,13 @@ public class Manager {
 					System.err.print("Digite o nome: ");
 					String name = scanner.nextLine();
 
-					System.err.print("Digite o Email: ");
-					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-					Optional<Email> emailOptional = errorHandler(emailResult);
+					Optional<Email> emailOptional = ManagerUtils.getEmail(scanner);
 					if (emailOptional.isEmpty()) {
 						break;
 					}
 					Email email = emailOptional.get();
 
-					System.err.print("Digite o Telefone: ");
-					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					Optional<Phone> phoneOptional = ManagerUtils.getPhone(scanner);
 					if (phoneOptional.isEmpty()) {
 						break;
 					}
@@ -85,9 +73,9 @@ public class Manager {
 					System.err.print("Digite a Data de Nacimento (YYYY-MM-DD): ");
 					LocalDate birthDate = LocalDate.parse(scanner.nextLine());
 
-					Optional<Patient> patientOptional = errorHandler(
+					Optional<Patient> patientOptional = ManagerUtils.errorHandler(
 							Patient.create(name, cpf, email, phone, address, birthDate));
-					if (phoneOptional.isEmpty()) {
+					if (patientOptional.isEmpty()) {
 						break;
 					}
 					Patient patient = patientOptional.get();
@@ -97,9 +85,7 @@ public class Manager {
 				case 3 -> {
 					System.err.println("=> Remover Paciente ");
 
-					System.err.print("Digite o CPF: ");
-					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-					Optional<CPF> cpfOptional = errorHandler(cpfResult);
+					Optional<CPF> cpfOptional = ManagerUtils.getCPF(scanner);
 					if (cpfOptional.isEmpty()) {
 						break;
 					}
@@ -108,14 +94,11 @@ public class Manager {
 					if (patientRepo.removePatient(cpf).isEmpty()) {
 						System.err.println("Paciente nao existe");
 					}
-					;
 				}
 				case 4 -> {
 					System.err.println("=> Modificar Paciente ");
 
-					System.err.print("Digite o CPF: ");
-					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-					Optional<CPF> cpfOptional = errorHandler(cpfResult);
+					Optional<CPF> cpfOptional = ManagerUtils.getCPF(scanner);
 					if (cpfOptional.isEmpty()) {
 						break;
 					}
@@ -125,22 +108,17 @@ public class Manager {
 						System.err.println("Paciente nao existe");
 						break;
 					}
-					;
 
 					System.err.print("Digite o nome: ");
 					String name = scanner.nextLine();
 
-					System.err.print("Digite o Email: ");
-					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-					Optional<Email> emailOptional = errorHandler(emailResult);
+					Optional<Email> emailOptional = ManagerUtils.getEmail(scanner);
 					if (emailOptional.isEmpty()) {
 						break;
 					}
 					Email email = emailOptional.get();
 
-					System.err.print("Digite o Telefone: ");
-					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					Optional<Phone> phoneOptional = ManagerUtils.getPhone(scanner);
 					if (phoneOptional.isEmpty()) {
 						break;
 					}
@@ -152,7 +130,7 @@ public class Manager {
 					System.err.print("Digite a Data de Nacimento (YYYY-MM-DD): ");
 					LocalDate birthDate = LocalDate.parse(scanner.nextLine());
 
-					Optional<Patient> patientOptional = errorHandler(
+					Optional<Patient> patientOptional = ManagerUtils.errorHandler(
 							Patient.create(name, cpf, email, phone, address, birthDate));
 					if (patientOptional.isEmpty()) {
 						break;
@@ -187,22 +165,13 @@ public class Manager {
 			switch (selection) {
 				case 1 -> {
 					System.err.println("=> Lista de Dentistas");
-					AsciiTable tb = new AsciiTable();
-					tb.addRule();
-					tb.addRow("CRM", "Nome", "Email", "Telefone");
-					tb.addRule();
-					dentistRepo.getAllDentists().parallelStream().forEach((dentist) -> {
-						dentist.addToTable(tb);
-						tb.addRule();
-					});
-					System.out.println(tb.render());
+					ManagerUtils.printTable(Arrays.asList("CRM", "Nome", "Email", "Telefone"), dentistRepo.getAllDentists(),
+							Dentist::getTable);
 				}
 				case 2 -> {
 					System.err.println("=> Adicione Dentista ");
 
-					System.err.print("Digite o CRM: ");
-					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-					Optional<CRM> crmOptional = errorHandler(crmResult);
+					Optional<CRM> crmOptional = ManagerUtils.getCRM(scanner);
 					if (crmOptional.isEmpty()) {
 						break;
 					}
@@ -211,23 +180,19 @@ public class Manager {
 					System.err.print("Digite o nome: ");
 					String name = scanner.nextLine();
 
-					System.err.print("Digite o Email: ");
-					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-					Optional<Email> emailOptional = errorHandler(emailResult);
+					Optional<Email> emailOptional = ManagerUtils.getEmail(scanner);
 					if (emailOptional.isEmpty()) {
 						break;
 					}
 					Email email = emailOptional.get();
 
-					System.err.print("Digite o Telefone: ");
-					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					Optional<Phone> phoneOptional = ManagerUtils.getPhone(scanner);
 					if (phoneOptional.isEmpty()) {
 						break;
 					}
 					Phone phone = phoneOptional.get();
 
-					Optional<Dentist> dentistOptional = errorHandler(Dentist.create(name, crm, email, phone));
+					Optional<Dentist> dentistOptional = ManagerUtils.errorHandler(Dentist.create(name, crm, email, phone));
 					if (dentistOptional.isEmpty()) {
 						break;
 					}
@@ -238,9 +203,7 @@ public class Manager {
 				case 3 -> {
 					System.err.println("=> Remover Dentista ");
 
-					System.err.print("Digite o CRM: ");
-					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-					Optional<CRM> crmOptional = errorHandler(crmResult);
+					Optional<CRM> crmOptional = ManagerUtils.getCRM(scanner);
 					if (crmOptional.isEmpty()) {
 						break;
 					}
@@ -253,9 +216,7 @@ public class Manager {
 				case 4 -> {
 					System.err.println("=> Modificar Dentista ");
 
-					System.err.print("Digite o CRM: ");
-					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-					Optional<CRM> crmOptional = errorHandler(crmResult);
+					Optional<CRM> crmOptional = ManagerUtils.getCRM(scanner);
 					if (crmOptional.isEmpty()) {
 						break;
 					}
@@ -268,23 +229,19 @@ public class Manager {
 					System.err.print("Digite o nome: ");
 					String name = scanner.nextLine();
 
-					System.err.print("Digite o Email: ");
-					Result<Email, Error> emailResult = Email.create(scanner.nextLine());
-					Optional<Email> emailOptional = errorHandler(emailResult);
+					Optional<Email> emailOptional = ManagerUtils.getEmail(scanner);
 					if (emailOptional.isEmpty()) {
 						break;
 					}
 					Email email = emailOptional.get();
 
-					System.err.print("Digite o Telefone: ");
-					Result<Phone, Error> phoneResult = Phone.create(scanner.nextLine());
-					Optional<Phone> phoneOptional = errorHandler(phoneResult);
+					Optional<Phone> phoneOptional = ManagerUtils.getPhone(scanner);
 					if (phoneOptional.isEmpty()) {
 						break;
 					}
 					Phone phone = phoneOptional.get();
 
-					Optional<Dentist> dentistOptional = errorHandler(Dentist.create(name, crm, email, phone));
+					Optional<Dentist> dentistOptional = ManagerUtils.errorHandler(Dentist.create(name, crm, email, phone));
 					if (dentistOptional.isEmpty()) {
 						break;
 					}
@@ -323,30 +280,19 @@ public class Manager {
 			switch (selection) {
 				case 1 -> {
 					System.err.println("=> Lista de Consultas");
-					AsciiTable tb = new AsciiTable();
-					tb.addRule();
-					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
-					tb.addRule();
-					appointmentRepo.getAllAppointments().parallelStream().forEach((appointment) -> {
-						appointment.addToTable(tb);
-						tb.addRule();
-					});
-					System.out.println(tb.render());
+					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
+							appointmentRepo.getAllAppointments(), Appointment::getTable);
 				}
 				case 2 -> {
 					System.err.println("=> Adicione Consulta ");
 
-					System.err.print("Digite o CPF: ");
-					Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-					Optional<CPF> cpfOptional = errorHandler(cpfResult);
+					Optional<CPF> cpfOptional = ManagerUtils.getCPF(scanner);
 					if (cpfOptional.isEmpty()) {
 						break;
 					}
 					CPF cpf = cpfOptional.get();
 
-					System.err.print("Digite o CRM: ");
-					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-					Optional<CRM> crmOptional = errorHandler(crmResult);
+					Optional<CRM> crmOptional = ManagerUtils.getCRM(scanner);
 					if (crmOptional.isEmpty()) {
 						break;
 					}
@@ -358,7 +304,7 @@ public class Manager {
 					System.err.print("Digite a Descrição: ");
 					String description = scanner.nextLine();
 
-					Optional<Appointment> appointmentOptional = errorHandler(
+					Optional<Appointment> appointmentOptional = ManagerUtils.errorHandler(
 							Appointment.create(cpf, crm, appointmentDateTime, description));
 					if (appointmentOptional.isEmpty()) {
 						break;
@@ -392,7 +338,7 @@ public class Manager {
 
 						System.err.print("Digite o CPF: ");
 						Result<CPF, Error> cpfResult = CPF.create(scanner.nextLine());
-						Optional<CPF> cpfOptional = errorHandler(cpfResult);
+						Optional<CPF> cpfOptional = ManagerUtils.errorHandler(cpfResult);
 						if (cpfOptional.isEmpty()) {
 							break;
 						}
@@ -400,7 +346,7 @@ public class Manager {
 
 						System.err.print("Digite o CRM: ");
 						Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-						Optional<CRM> crmOptional = errorHandler(crmResult);
+						Optional<CRM> crmOptional = ManagerUtils.errorHandler(crmResult);
 						if (crmOptional.isEmpty()) {
 							break;
 						}
@@ -412,7 +358,7 @@ public class Manager {
 						System.err.print("Digite a Descrição: ");
 						String description = scanner.nextLine();
 
-						Optional<Appointment> appointmentOptional = errorHandler(
+						Optional<Appointment> appointmentOptional = ManagerUtils.errorHandler(
 								Appointment.createWithUUID(uuid, cpf, crm, appointmentDateTime, description));
 						if (appointmentOptional.isEmpty()) {
 							break;
@@ -430,36 +376,20 @@ public class Manager {
 					System.err.print("Digite a Data das Consultas (YYYY-MM-DD): ");
 					LocalDate appointmentsDate = LocalDate.parse(scanner.nextLine());
 
-					AsciiTable tb = new AsciiTable();
-					tb.addRule();
-					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
-					tb.addRule();
-					appointmentRepo.getAllAppointmentsOnDate(appointmentsDate).parallelStream().forEach((appointment) -> {
-						appointment.addToTable(tb);
-						tb.addRule();
-					});
-					System.out.println(tb.render());
+					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
+							appointmentRepo.getAllAppointmentsOnDate(appointmentsDate), Appointment::getTable);
 				}
 				case 6 -> {
 					System.err.println("=> Lista de Consultas por Dentista");
 
-					System.err.print("Digite o CRM: ");
-					Result<CRM, Error> crmResult = CRM.create(scanner.nextLine());
-					Optional<CRM> crmOptional = errorHandler(crmResult);
+					Optional<CRM> crmOptional = ManagerUtils.getCRM(scanner);
 					if (crmOptional.isEmpty()) {
 						break;
 					}
 					CRM crm = crmOptional.get();
 
-					AsciiTable tb = new AsciiTable();
-					tb.addRule();
-					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
-					tb.addRule();
-					appointmentRepo.getAllAppointmentsByDentist(crm).parallelStream().forEach((appointment) -> {
-						appointment.addToTable(tb);
-						tb.addRule();
-					});
-					System.out.println(tb.render());
+					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
+							appointmentRepo.getAllAppointmentsByDentist(crm), Appointment::getTable);
 				}
 				case 7 -> {
 					System.err.println("=> Lista de Pacientes com consultas nos proximos dias");
@@ -468,26 +398,14 @@ public class Manager {
 					int value = scanner.nextInt();
 					scanner.nextLine();
 
-					AsciiTable tb = new AsciiTable();
-					tb.addRule();
-					tb.addRow("Dentista", "Paciente", "Hora Marcada", "Descrição");
-					tb.addRule();
-					appointmentRepo.getAllAppointmentsNextDays(value).parallelStream().forEach((appointment) -> {
-						appointment.addToTable(tb);
-						tb.addRule();
-					});
-					System.out.println(tb.render());
+					ManagerUtils.printTable(Arrays.asList("Dentista", "Paciente", "Hora Marcada", "Descrição"),
+							appointmentRepo.getAllAppointmentsNextDays(value), Appointment::getTable);
 				}
 				case 8 -> {
 					System.err.println("=> Numero de consultas por dentistas");
-
-					AsciiTable tb = new AsciiTable();
-					tb.addRule();
-					tb.addRow("Dentista", "Numero de Consultas");
-					tb.addRule();
-					appointmentRepo.getNumberOfAppointments().forEach((dentistId, number) -> tb.addRow(dentistId, number));
-					tb.addRule();
-					System.out.println(tb.render());
+					ManagerUtils.printTable(Arrays.asList("Dentista", "Numero de Consultas"),
+							appointmentRepo.getNumberOfAppointments().entrySet(),
+							(entry) -> Arrays.asList(entry.getKey(), entry.getValue()));
 				}
 				case 0 -> {
 					break mainLoop;
@@ -496,21 +414,5 @@ public class Manager {
 			}
 		}
 
-	}
-
-	private static <T> Optional<T> errorHandler(Result<T, Error> result) {
-		switch (result) {
-			case Result.Success<T, Error>(T val) -> {
-				return Optional.of(val);
-			}
-			case Result.Error<T, Error>(Error error) -> {
-				switch (error) {
-					case InvalidArgument -> System.err.println("Argumento invalido, tente novamente");
-					case EmptyString -> System.err.println("Argumento invalido, tente novamente");
-					case NullPointer -> throw new NullPointerException();
-				}
-			}
-		}
-		return Optional.empty();
 	}
 }

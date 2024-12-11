@@ -1,6 +1,8 @@
 package br.dev.henriquekh.entities;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -10,7 +12,6 @@ import com.github.sviperll.result4j.Result;
 import br.dev.henriquekh.Error;
 import br.dev.henriquekh.validator.CPF;
 import br.dev.henriquekh.validator.CRM;
-import de.vandermeer.asciitable.AsciiTable;
 
 public class Appointment {
 	private final UUID uuid;
@@ -69,7 +70,7 @@ public class Appointment {
 		return description;
 	}
 
-	public void addToTable(AsciiTable tb) {
-		tb.addRow(getDentistId(), getPatientId(), getAppointmentDateTime(), getDescription());
+	public Collection<Object> getTable() {
+		return Arrays.asList(getDentistId(), getPatientId(), getAppointmentDateTime(), getDescription());
 	}
 }

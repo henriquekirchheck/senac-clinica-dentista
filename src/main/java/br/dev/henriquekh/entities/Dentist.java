@@ -1,5 +1,8 @@
 package br.dev.henriquekh.entities;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.sviperll.result4j.Result;
@@ -8,7 +11,6 @@ import br.dev.henriquekh.Error;
 import br.dev.henriquekh.validator.CRM;
 import br.dev.henriquekh.validator.Email;
 import br.dev.henriquekh.validator.Phone;
-import de.vandermeer.asciitable.AsciiTable;
 
 public class Dentist {
 	private final String name;
@@ -51,7 +53,7 @@ public class Dentist {
 		return phone;
 	}
 
-	public void addToTable(AsciiTable tb) {
-		tb.addRow(getCrm(), getName(), getEmail(), getPhone());
+	public Collection<Object> getTable() {
+		return Arrays.asList(getCrm(), getName(), getEmail(), getPhone());
 	}
 }

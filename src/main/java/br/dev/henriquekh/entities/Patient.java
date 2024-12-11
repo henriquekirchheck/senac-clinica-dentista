@@ -1,6 +1,8 @@
 package br.dev.henriquekh.entities;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +10,6 @@ import com.github.sviperll.result4j.Result;
 
 import br.dev.henriquekh.Error;
 import br.dev.henriquekh.validator.Phone;
-import de.vandermeer.asciitable.AsciiTable;
 import br.dev.henriquekh.validator.CPF;
 import br.dev.henriquekh.validator.Email;
 
@@ -70,7 +71,7 @@ public class Patient {
     return birthDate;
   }
 
-  public void addToTable(AsciiTable tb) {
-    tb.addRow(getCpf(), getName(), getEmail(), getPhone(), getAddress(), getBirthDate());
+  public Collection<Object> getTable() {
+    return Arrays.asList(getCpf(), getName(), getEmail(), getPhone(), getAddress(), getBirthDate());
   }
 }
