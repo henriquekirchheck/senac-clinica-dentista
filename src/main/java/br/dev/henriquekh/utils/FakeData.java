@@ -21,7 +21,8 @@ import br.dev.henriquekh.validator.Email;
 import br.dev.henriquekh.validator.Phone;
 
 public class FakeData {
-	public static void generateFakeData(AppointmentRepo appointmentRepo, DentistRepo dentistRepo, PatientRepo patientRepo) {
+	public static void generateFakeData(AppointmentRepo appointmentRepo, DentistRepo dentistRepo,
+			PatientRepo patientRepo) {
 		Faker faker = new Faker();
 		for (int i = 0; i < 10; i++) {
 			patientRepo.createPatient(Patient

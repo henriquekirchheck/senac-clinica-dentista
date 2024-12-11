@@ -31,8 +31,8 @@ public class DentistRepo {
   }
 
   public void loadDentists(Collection<Dentist> dentists) {
-		for (Dentist dentist : dentists) {
-			createDentist(dentist);
-		}
-	}
+    for (Dentist dentist : dentists) {
+      createDentist(dentist);
+    }
+  }
 }
