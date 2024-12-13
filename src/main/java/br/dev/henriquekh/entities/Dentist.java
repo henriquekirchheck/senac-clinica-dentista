@@ -3,35 +3,14 @@ package br.dev.henriquekh.entities;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.sviperll.result4j.Result;
-
-import br.dev.henriquekh.Error;
-import br.dev.henriquekh.validator.CRM;
-import br.dev.henriquekh.validator.Email;
-import br.dev.henriquekh.validator.Phone;
-
 public class Dentist {
 	private final String name;
-	private final CRM crm;
-	private final Email email;
-	private final Phone phone;
+	private final String crm;
+	private final String email;
+	private final String phone;
 
-	public static Result<Dentist, Error> create(String name, CRM crm, Email email, Phone phone) {
-		if (name == null) {
-			return Result.error(Error.NullPointer);
-		}
-		if (name.trim().isEmpty()) {
-			return Result.error(Error.EmptyString);
-		}
-		return Result.success(new Dentist(name, crm, email, phone));
-	}
-
-	@JsonCreator
-	private Dentist(@JsonProperty("name") String name, @JsonProperty("crm") CRM crm, @JsonProperty("email") Email email,
-			@JsonProperty("phone") Phone phone) {
+	private Dentist(String name, String crm, String email,
+			String phone) {
 		this.name = name;
 		this.crm = crm;
 		this.email = email;
@@ -42,19 +21,18 @@ public class Dentist {
 		return name;
 	}
 
-	public CRM getCrm() {
+	public String getCrm() {
 		return crm;
 	}
 
-	public Email getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
-	public Phone getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	@JsonIgnore
 	public Collection<Object> asTable() {
 		return Arrays.asList(getCrm(), getName(), getEmail(), getPhone());
 	}

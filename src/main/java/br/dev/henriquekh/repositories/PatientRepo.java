@@ -1,20 +1,23 @@
 package br.dev.henriquekh.repositories;
 
+import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 
 import br.dev.henriquekh.entities.Patient;
-import br.dev.henriquekh.validator.CPF;
 
 public class PatientRepo {
-  private final HashMap<CPF, Patient> patientsMap;
+  private final Connection conn;
 
-  public PatientRepo() {
-    this.patientsMap = new HashMap<>();
+  public PatientRepo(Connection conn) {
+    this.conn = conn;
   }
 
-  public void createPatient(Patient patient) {
+  public void createPatient(String name, String cpf, String email,
+      String phone, String address,
+      LocalDate birthDate) {
     patientsMap.put(patient.getCpf(), patient);
   }
 

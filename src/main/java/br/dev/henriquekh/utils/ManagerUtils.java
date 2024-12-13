@@ -5,10 +5,6 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Function;
 import br.dev.henriquekh.Error;
-import br.dev.henriquekh.validator.CPF;
-import br.dev.henriquekh.validator.CRM;
-import br.dev.henriquekh.validator.Email;
-import br.dev.henriquekh.validator.Phone;
 import de.vandermeer.asciitable.AsciiTable;
 
 import com.github.sviperll.result4j.Result;

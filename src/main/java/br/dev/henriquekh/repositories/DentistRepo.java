@@ -1,20 +1,21 @@
 package br.dev.henriquekh.repositories;
 
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 
 import br.dev.henriquekh.entities.Dentist;
-import br.dev.henriquekh.validator.CRM;
 
 public class DentistRepo {
-  private final HashMap<CRM, Dentist> dentistsMap;
+  private final Connection conn;
 
-  public DentistRepo() {
-    this.dentistsMap = new HashMap<>();
+  public DentistRepo(Connection conn) {
+    this.conn = conn;
   }
 
-  public void createDentist(Dentist patient) {
+  public void createDentist(String name, String crm, String email,
+  String phone) {
     dentistsMap.put(patient.getCrm(), patient);
   }
 

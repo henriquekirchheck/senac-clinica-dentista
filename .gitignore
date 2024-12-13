@@ -40,3 +40,8 @@ build/
 
 ### Save File ###
 Save.json
+
+### Env ###
+.env
+.env.*
+!.env.example

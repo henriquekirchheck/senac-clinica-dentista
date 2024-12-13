@@ -15,10 +15,6 @@ import br.dev.henriquekh.entities.Patient;
 import br.dev.henriquekh.repositories.AppointmentRepo;
 import br.dev.henriquekh.repositories.DentistRepo;
 import br.dev.henriquekh.repositories.PatientRepo;
-import br.dev.henriquekh.validator.CPF;
-import br.dev.henriquekh.validator.CRM;
-import br.dev.henriquekh.validator.Email;
-import br.dev.henriquekh.validator.Phone;
 
 public class FakeData {
 	public static void generateFakeData(AppointmentRepo appointmentRepo, DentistRepo dentistRepo,

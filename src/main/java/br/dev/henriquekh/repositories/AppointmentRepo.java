@@ -1,7 +1,12 @@
 package br.dev.henriquekh.repositories;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -11,17 +16,28 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import br.dev.henriquekh.entities.Appointment;
-import br.dev.henriquekh.validator.CRM;
 
 public class AppointmentRepo {
-	private final HashMap<UUID, Appointment> appointmentMap;
+	private final Connection conn;
 
-	public AppointmentRepo() {
-		this.appointmentMap = new HashMap<>();
+	public AppointmentRepo(Connection conn) {
+		this.conn = conn;
 	}
 
-	public void createAppointment(Appointment patient) {
-		appointmentMap.put(patient.getUuid(), patient);
+	public Optional<UUID> createAppointment(String patientId,
+			String dentistId, LocalDateTime appointmentDateTime,
+			String description) throws SQLException {
+		PreparedStatement st = conn.prepareStatement(
+				"INSERT INTO appointment (patientCpf, dentistCrm, appointmentDateTime, description) VALUES (?, ?, ?, ?) RETURNING id");
+		st.setString(1, patientId);
+		st.setString(2, dentistId);
+		st.setObject(3, appointmentDateTime);
+		st.setString(4, description);
+
+		ResultSet rs = st.executeQuery();
+		if (rs.next())
+			return Optional.empty();
+		return Optional.of(UUID.fromString(rs.getString(1)));
 	}
 
 	public Optional<Appointment> removeAppointment(UUID uuid) {
